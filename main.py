@@ -32,6 +32,7 @@ def get_gemini_response(song_lyrics, full_response=False):
         history=[]
     )
 
+    # If full response, get the justifications for the ratings
     if full_response:
         response = chat_session.send_message(f"""Estoy explorando las letras de diferentes canciones, y me gustaría que evaluaras si la siguiente canción contiene estos temas: empatía, creatividad, toma de decisiones, relaciones interpersonales saludables, resiliencia, racismo, sexismo, abuso de sustancias, violencia, contenido sexual. Explora estos temas como si fueras un oyente escuchando la canción por primera vez.
         
@@ -49,9 +50,11 @@ def get_gemini_response(song_lyrics, full_response=False):
 
 
 def get_chatgpt_response(song_lyrics, format_instructions=None):
+    # Set API key
     openai_api_key = os.getenv('OPENAI_API_KEY')
     os.environ.setdefault("OPENAI_API_KEY", openai_api_key)
 
+    # Format prompt
     prompt = f"""Estoy explorando las letras de diferentes canciones, y me gustaría que evaluaras si la siguiente canción contiene estos temas: empatía, creatividad, toma de decisiones, relaciones interpersonales saludables, resiliencia, racismo, sexismo, abuso de sustancias, violencia, contenido sexual. Explora estos temas como si fueras un oyente escuchando la canción por primera vez.
         
         {song_lyrics}
@@ -70,12 +73,12 @@ def get_chatgpt_response(song_lyrics, format_instructions=None):
     )
     return chat_completion
 
-
-# Initialize the Genius API client with the key from the .env file
-genius_api_key = os.getenv('GENIUS_API_KEY')
-genius = lyricsgenius.Genius(genius_api_key)
-
 def get_song_lyrics(song_name, artist_name=None):
+    # Initialize the Genius API client with the key from the .env file
+    genius_api_key = os.getenv('GENIUS_API_KEY')
+    genius = lyricsgenius.Genius(genius_api_key)
+    
+    # Get and return song lyrics
     if artist_name:
         song = genius.search_song(song_name, artist=artist_name)
     else:
@@ -95,6 +98,7 @@ def display_ratings(output):
 
 
 if __name__ == "__main__":
+    # Parse all the arguments
     parser = argparse.ArgumentParser(description="Analyze song lyrics using APIs.")
     parser.add_argument("-n", "--name", required=True, help="Name of the song to analyze")
     parser.add_argument("-a", "--artist", help="Name of the artist (optional)")
